@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import org.w3c.dom.html.HTMLDOMImplementation;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,6 +20,14 @@ public class Robot extends TimedRobot {
   private static final String kCustomAuto = "My Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
+  
+  private Wheels leftfrontWheel;
+  private Wheels leftbackWheel;
+  private Wheels rightfrontWheel;
+  private Wheels rightbackWheel;
+  
+  private Controller controller;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -25,8 +35,17 @@ public class Robot extends TimedRobot {
    */
   public Robot() {
     m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+    m_chooser.addOption("Left Auto", kCustomAuto);
+    m_chooser.addOption("Center Auto", kCustomAuto);
+    m_chooser.addOption("Right Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
+    
+    leftfrontWheel = new Wheels(1.1);
+    leftbackWheel = new Wheels(2.1);
+    rightfrontWheel = new Wheels(3.1);
+    rightbackWheel = new Wheels(4.1);
+    
+    controller = new Controller();
   }
 
   /**
@@ -76,7 +95,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    m_autoSelected = m_chooser.getSelected();
+    System.out.println("Auto selected: " + m_autoSelected);
+  }
 
   /** This function is called once when the robot is disabled. */
   @Override
@@ -93,7 +115,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {
-    System.out.println("Hello World");
+    System.out.println(controller.grabBall());
+    System.out.println(controller.dropBall());
+    System.out.println(controller.throwBall());
+    System.out.println(controller.popBall());
   }
 
   /** This function is called once when the robot is first started up. */
